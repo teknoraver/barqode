@@ -1,0 +1,7 @@
+Installation note:
+
+Make sure you have Qt4 and libdmtx installed and in the compiler path.
+Enter the barqode directory and type:
+
+qmake
+make

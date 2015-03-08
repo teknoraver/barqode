@@ -7,3 +7,8 @@ CONFIG += release warn_on thread qt
 TARGET = barqode
 RC_FILE = barqode.rc
 LIBS += -ldmtx
+QT += network widgets
+
+win32 {
+	LIBS += -static
+}

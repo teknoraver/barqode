@@ -32,22 +32,15 @@ BarQode::BarQode() : QMainWindow(0)
 	connect(message, SIGNAL(textChanged()), SLOT(textChanged()));
 	connect(zoom, SIGNAL(valueChanged(int)), SLOT(textChanged()));
 	connect(save, SIGNAL(clicked()), SLOT(saveSlot()));
-#ifdef DmtxVersion
 	enc = dmtxEncodeCreate();
 	enc->pixelPacking = DmtxPack24bppRGB;
-#else
-	enc = dmtxEncodeStructInit();
-#endif
+	last.start();
 	textChanged();
 }
 
 BarQode::~BarQode()
 {
-#ifdef DmtxVersion
 	dmtxEncodeDestroy(&enc);
-#else
-	dmtxEncodeStructDeInit(&enc);
-#endif
 }
 
 void BarQode::textChanged()
@@ -59,8 +52,7 @@ void BarQode::textChanged()
 	QString qmsg = message->toPlainText();
 	if(qmsg.isEmpty())
 		qmsg = "http://teknoraver.net/";
-	char *msg = qmsg.toAscii().data();
-#ifdef DmtxVersion
+	const char *msg = qmsg.toUtf8().constData();
 	enc->moduleSize = zoom->value();
 	enc->marginSize = enc->moduleSize;
 	if(!dmtxEncodeDataMatrix(enc, strlen(msg), (unsigned char*)msg)) {
@@ -68,12 +60,6 @@ void BarQode::textChanged()
 		return;
 	}
 	DmtxImage *img = enc->image;
-#else
-	dmtxEncodeDataMatrix(&enc, strlen(msg), (unsigned char*)msg, DmtxSymbolSquareAuto);
-	enc.moduleSize = zoom->value();
-	enc.marginSize = enc.moduleSize;
-	DmtxImage *img = enc.image;
-#endif
 	const int w = img->width, h = img->height;
 	QPixmap code(w, h);
 	code.fill(Qt::white);
@@ -81,11 +67,7 @@ void BarQode::textChanged()
 	QPainter painter(&code);
 	for(int i = 0; i < h; i++)
 		for(int j = 0; j < w; j++)
-#ifdef DmtxVersion
 			if(!img->pxl[i * 3 * w + j * 3])
-#else
-			if(!*img->pxl[i * w + j])
-#endif
 				painter.drawPoint(j, i);
 	image->setPixmap(code);
 	last.start();

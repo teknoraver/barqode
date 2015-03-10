@@ -6,7 +6,7 @@ TEMPLATE = app
 CONFIG += release warn_on thread qt
 TARGET = barqode
 RC_FILE = barqode.rc
-LIBS += -ldmtx
+LIBS += -ldmtx -lqrencode
 QT += network widgets
 
 win32 {

@@ -21,7 +21,7 @@
 #include <QImage>
 #include <QTimer>
 #include <QFileDialog>
-
+#include <qrencode.h>
 
 #include "barqode.h"
 
@@ -53,23 +53,43 @@ void BarQode::textChanged()
 	if(qmsg.isEmpty())
 		qmsg = "http://teknoraver.net/";
 	const char *msg = qmsg.toUtf8().constData();
-	enc->moduleSize = zoom->value();
-	enc->marginSize = enc->moduleSize;
-	if(!dmtxEncodeDataMatrix(enc, strlen(msg), (unsigned char*)msg)) {
-		QTimer::singleShot(100, this, SLOT(textChanged()));
-		return;
-	}
-	DmtxImage *img = enc->image;
-	const int w = img->width, h = img->height;
-	QPixmap code(w, h);
-	code.fill(Qt::white);
+	if(codeType->currentIndex() == 0) {
+		QRcode *qrcode = QRcode_encodeString8bit((const char *)msg, 0, QR_ECLEVEL_L);
+		if(!qrcode) {
+			QTimer::singleShot(100, this, SLOT(textChanged()));
+			return;
+		}
+		const int w = qrcode->width;
+		QPixmap code(w * zoom->value(), w * zoom->value());
+		code.fill(Qt::white);
 
-	QPainter painter(&code);
-	for(int i = 0; i < h; i++)
-		for(int j = 0; j < w; j++)
-			if(!img->pxl[i * 3 * w + j * 3])
-				painter.drawPoint(j, i);
-	image->setPixmap(code);
+		QPainter painter(&code);
+		painter.scale(zoom->value(), zoom->value());
+		for(int i = 0; i < w; i++)
+			for(int j = 0; j < w; j++)
+				if(qrcode->data[i * w + j] & 1)
+					painter.drawPoint(j, i);
+		QRcode_free(qrcode);
+		image->setPixmap(code);
+	} else {
+		enc->moduleSize = zoom->value();
+		enc->marginSize = enc->moduleSize;
+		if(!dmtxEncodeDataMatrix(enc, strlen(msg), (unsigned char*)msg)) {
+			QTimer::singleShot(100, this, SLOT(textChanged()));
+			return;
+		}
+		DmtxImage *img = enc->image;
+		const int w = img->width, h = img->height;
+		QPixmap code(w, h);
+		code.fill(Qt::white);
+
+		QPainter painter(&code);
+		for(int i = 0; i < h; i++)
+			for(int j = 0; j < w; j++)
+				if(!img->pxl[i * 3 * w + j * 3])
+					painter.drawPoint(j, i);
+		image->setPixmap(code);
+	}
 	last.start();
 }
 

@@ -40,11 +40,7 @@ private slots:
 
 private:
 	QTime last;
-#ifdef DmtxVersion
 	DmtxEncode *enc;
-#else
-	DmtxEncode enc;
-#endif
 };
 
 #endif

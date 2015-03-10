@@ -69,9 +69,7 @@ void BarQode::textChanged()
 		for(int i = 0; i < w; i++)
 			for(int j = 0; j < w; j++)
 				if(qrcode->data[i * w + j] & 1)
-					for(int i2 = 0; i2 < z; i2++)
-						for(int j2 = 0; j2 < z; j2++)
-							painter.drawPoint((j + 1) * z + j2, (i + 1) * z + i2);
+					painter.fillRect((j + 1) * z, (i + 1) * z, z, z, QColor(0, 0, 0, 255));
 
 		QRcode_free(qrcode);
 		image->setPixmap(code);

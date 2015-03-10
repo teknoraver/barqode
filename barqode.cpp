@@ -60,15 +60,19 @@ void BarQode::textChanged()
 			return;
 		}
 		const int w = qrcode->width;
-		QPixmap code(w * zoom->value(), w * zoom->value());
+		const int z = zoom->value();
+		QPixmap code((w + 2) * z, (w + 2) * z);
 		code.fill(Qt::white);
 
 		QPainter painter(&code);
-		painter.scale(zoom->value(), zoom->value());
+
 		for(int i = 0; i < w; i++)
 			for(int j = 0; j < w; j++)
 				if(qrcode->data[i * w + j] & 1)
-					painter.drawPoint(j, i);
+					for(int i2 = 0; i2 < z; i2++)
+						for(int j2 = 0; j2 < z; j2++)
+							painter.drawPoint((j + 1) * z + j2, (i + 1) * z + i2);
+
 		QRcode_free(qrcode);
 		image->setPixmap(code);
 	} else {

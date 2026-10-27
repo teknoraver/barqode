@@ -31,6 +31,7 @@ BarQode::BarQode() : QMainWindow(nullptr)
 	connect(actionAbout, &QAction::triggered, this, &BarQode::about);
 	connect(message, &QTextEdit::textChanged, this, &BarQode::textChanged);
 	connect(zoom, &QSlider::valueChanged, this, &BarQode::textChanged);
+	connect(codeType, &QComboBox::currentIndexChanged, this, &BarQode::textChanged);
 	connect(save, &QPushButton::clicked, this, &BarQode::saveSlot);
 	enc = dmtxEncodeCreate();
 	enc->pixelPacking = DmtxPack24bppRGB;

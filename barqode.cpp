@@ -52,9 +52,9 @@ void BarQode::textChanged()
 	QString qmsg = message->toPlainText();
 	if(qmsg.isEmpty())
 		qmsg = "http://teknoraver.net/";
-	const char *msg = qmsg.toUtf8().constData();
+	QByteArray msg = qmsg.toUtf8();
 	if(codeType->currentIndex() == 0) {
-		QRcode *qrcode = QRcode_encodeString8bit((const char *)msg, 0, QR_ECLEVEL_L);
+		QRcode *qrcode = QRcode_encodeString8bit(msg.constData(), 0, QR_ECLEVEL_L);
 		if(!qrcode) {
 			QTimer::singleShot(100, this, &BarQode::textChanged);
 			return;
@@ -76,7 +76,7 @@ void BarQode::textChanged()
 	} else {
 		enc->moduleSize = zoom->value();
 		enc->marginSize = enc->moduleSize;
-		if(!dmtxEncodeDataMatrix(enc, strlen(msg), (unsigned char*)msg)) {
+		if(!dmtxEncodeDataMatrix(enc, msg.size(), (unsigned char *)msg.data())) {
 			QTimer::singleShot(100, this, &BarQode::textChanged);
 			return;
 		}

@@ -52,7 +52,7 @@ void BarQode::textChanged()
 	}
 	QString qmsg = message->toPlainText();
 	if(qmsg.isEmpty())
-		qmsg = "http://teknoraver.net/";
+		qmsg = "https://matteocroce.it/";
 	QByteArray msg = qmsg.toUtf8();
 	if(codeType->currentIndex() == 0) {
 		QRcode *qrcode = QRcode_encodeString8bit(msg.constData(), 0, QR_ECLEVEL_L);
@@ -109,6 +109,6 @@ void BarQode::about()
 {
 	QIcon old = windowIcon();
 	setWindowIcon(QIcon(":/matteo.png"));
-	QMessageBox::about(this, "About BarQode", "BarQode - a DataMatrix tool<br>by Matteo Croce <a href=\"http://teknoraver.net/\">http://teknoraver.net/</a>");
+	QMessageBox::about(this, "About BarQode", "BarQode - a QR Code and DataMatrix tool<br>by Matteo Croce <a href=\"https://matteocroce.it/\">https://matteocroce.it/</a>");
 	setWindowIcon(old);
 }

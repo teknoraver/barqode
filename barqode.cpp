@@ -101,7 +101,7 @@ void BarQode::saveSlot()
 	QString path = QFileDialog::getSaveFileName(this, QString(), QString(), "PNG Images (*.png)");
 	if(path.length()) {
 		image->pixmap().toImage().convertToFormat(QImage::Format_Mono).save(path);
-		QMessageBox::information(this, "Saved", "DataMatrix saved to " + path);
+		QMessageBox::information(this, "Saved", codeType->currentText() + " saved to " + path);
 	}
 }
 

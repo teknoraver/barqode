@@ -3,6 +3,8 @@
 BarQode generates QR codes and DataMatrix codes from a text, while typing.
 The module size can be changed with the zoom slider, and the code can be saved as a PNG image.
 
+<p align="center"><img src="https://github.com/user-attachments/assets/d06a1fb7-44b6-46b4-8be8-68e438459297" alt="BarQode main window" width="352"></p>
+
 ## Build
 
 Requirements: CMake 3.19 or newer, Qt 6 (Widgets), [libqrencode](https://fukuchi.org/works/qrencode/)

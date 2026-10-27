@@ -25,13 +25,13 @@
 
 #include "barqode.h"
 
-BarQode::BarQode() : QMainWindow(0)
+BarQode::BarQode() : QMainWindow(nullptr)
 {
 	setupUi(this);
-	connect(actionAbout, SIGNAL(triggered()), SLOT(about()));
-	connect(message, SIGNAL(textChanged()), SLOT(textChanged()));
-	connect(zoom, SIGNAL(valueChanged(int)), SLOT(textChanged()));
-	connect(save, SIGNAL(clicked()), SLOT(saveSlot()));
+	connect(actionAbout, &QAction::triggered, this, &BarQode::about);
+	connect(message, &QTextEdit::textChanged, this, &BarQode::textChanged);
+	connect(zoom, &QSlider::valueChanged, this, &BarQode::textChanged);
+	connect(save, &QPushButton::clicked, this, &BarQode::saveSlot);
 	enc = dmtxEncodeCreate();
 	enc->pixelPacking = DmtxPack24bppRGB;
 	last.start();
@@ -46,7 +46,7 @@ BarQode::~BarQode()
 void BarQode::textChanged()
 {
 	if(last.elapsed() < 100) {
-		QTimer::singleShot(100, this, SLOT(textChanged()));
+		QTimer::singleShot(100, this, &BarQode::textChanged);
 		return;
 	}
 	QString qmsg = message->toPlainText();
@@ -56,7 +56,7 @@ void BarQode::textChanged()
 	if(codeType->currentIndex() == 0) {
 		QRcode *qrcode = QRcode_encodeString8bit((const char *)msg, 0, QR_ECLEVEL_L);
 		if(!qrcode) {
-			QTimer::singleShot(100, this, SLOT(textChanged()));
+			QTimer::singleShot(100, this, &BarQode::textChanged);
 			return;
 		}
 		const int w = qrcode->width;
@@ -77,7 +77,7 @@ void BarQode::textChanged()
 		enc->moduleSize = zoom->value();
 		enc->marginSize = enc->moduleSize;
 		if(!dmtxEncodeDataMatrix(enc, strlen(msg), (unsigned char*)msg)) {
-			QTimer::singleShot(100, this, SLOT(textChanged()));
+			QTimer::singleShot(100, this, &BarQode::textChanged);
 			return;
 		}
 		DmtxImage *img = enc->image;
@@ -99,7 +99,7 @@ void BarQode::saveSlot()
 {
 	QString path = QFileDialog::getSaveFileName(this, QString(), QString(), "PNG Images (*.png)");
 	if(path.length()) {
-		image->pixmap()->toImage().convertToFormat(QImage::Format_Mono).save(path);
+		image->pixmap().toImage().convertToFormat(QImage::Format_Mono).save(path);
 		QMessageBox::information(this, "Saved", "DataMatrix saved to " + path);
 	}
 }

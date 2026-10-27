@@ -17,18 +17,12 @@
  ****************************************************************************/
 
 #include <QApplication>
-#include <QMainWindow>
-//#include <QPlastiqueStyle>
-#include <QDesktopWidget>
 #include "barqode.h"
 
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
-//	QApplication::setStyle(new QPlastiqueStyle());
-//	QApplication::setPalette(QApplication::style()->standardPalette());
 	BarQode qfm;
-	qfm.move((QApplication::desktop()->screenGeometry(&qfm).width() - qfm.width()) / 2, (QApplication::desktop()->screenGeometry(&qfm).height() - qfm.height()) / 2);
-	qfm.setVisible(true);
+	qfm.show();
 	return a.exec();
 }

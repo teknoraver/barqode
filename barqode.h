@@ -21,7 +21,7 @@
 
 #include <dmtx.h>
 #include <QMainWindow>
-#include <QTime>
+#include <QElapsedTimer>
 
 #include "ui_barqodewidget.h"
 
@@ -31,7 +31,7 @@ class BarQode: public QMainWindow, private Ui::MainWindow
 
 public:
 	BarQode();
-	~BarQode();
+	~BarQode() override;
 
 private slots:
 	void about();
@@ -39,7 +39,7 @@ private slots:
 	void saveSlot();
 
 private:
-	QTime last;
+	QElapsedTimer last;
 	DmtxEncode *enc;
 };
 
